@@ -13,3 +13,7 @@ pwd
 L'output ha mostrato un percorso nella home Linux (`~/workspace/azure-devops-lab`), coerente
 con l'assenza di qualunque mount di tipo `/mnt/c`, che su questo sistema non esiste perché il
 sistema operativo è Linux nativo e non Windows con WSL.
+
+Il comando più utile incontrato in questa unità è stato `git status --short`: eseguito prima
+di ogni `git add`, ha permesso di controllare esattamente quali file sarebbero entrati nel
+prossimo commit, evitando di includere file non richiesti.
