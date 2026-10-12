@@ -1,0 +1,30 @@
+# Segreti e configurazioni locali
+.env
+*.env
+*.pfx
+*.pem
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
+# Python (Catalogo prodotti)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node.js (eventuale frontend)
+node_modules/
+npm-debug.log*
+
+# Build e artefatti
+dist/
+build/
+*.log
+
+# Sistema
+.DS_Store
