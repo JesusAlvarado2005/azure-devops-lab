@@ -3,7 +3,7 @@
 ## Contesto verificato
 
 - Azure Portal accessibile: sì, ho creato dal portale il resource group, la VNet e lo storage account
-- Azure CLI autenticata: sì, uso Azure CLI 2.83.0 in Ubuntu WSL e az account show mostra Azure subscription 1 attiva e predefinita
+- Azure CLI autenticata: sì, uso Azure CLI 2.83.0 nel terminale di Fedora Linux e az account show mostra Azure subscription 1 attiva e predefinita
 - sottoscrizione corretta verificata senza pubblicarne l'ID: az account list mostra una sola sottoscrizione, quindi non ho dovuto usare az account set
 - località scelta e motivo: italynorth, perché compare tra le località disponibili, i provider Microsoft.Network e Microsoft.Storage sono già registrati e il portale ha accettato tutte le creazioni
 
@@ -29,7 +29,7 @@ Quando ho caricato il file delle variabili con source ho avuto l'errore bad subs
 
 Nel portale, nella pagina Resources del resource group, ho visto le stesse due risorse che mi dava az resource list, con località, tag e stato uguali. Nella JSON View c'è tutta la risorsa con l'ID completo, che ha la stessa struttura dell'output jsonc della CLI. La differenza più chiara l'ho vista sulla subnet. Nel portale l'indirizzo 10.20.1.0/24 si vede subito, mentre con la query del lab la CLI mi dava null. Interrogando direttamente la subnet ho scoperto che il valore si trova nel campo addressPrefixes. Per me il portale è più comodo per esplorare una risorsa nuova, la CLI è meglio quando so già cosa cercare e voglio ripetere lo stesso controllo.
 
-In Cloud Shell, aperto senza storage, la CLI vede la stessa sottoscrizione di WSL ma ha una versione più nuova, la 2.90.0. È un ambiente separato, gestito da Azure. In PowerShell il modulo Az.Resources è alla versione 10.2.0 e Get-AzContext mostra già Azure subscription 1. Con Get-AzResourceGroup ho letto il gruppo del laboratorio e ho controllato che nome, località e stato fossero uguali a quelli della CLI.
+In Cloud Shell, aperto senza storage, la CLI vede la stessa sottoscrizione del mio terminale ma ha una versione più nuova, la 2.90.0. È un ambiente separato, gestito da Azure. In PowerShell il modulo Az.Resources è alla versione 10.2.0 e Get-AzContext mostra già Azure subscription 1. Con Get-AzResourceGroup ho letto il gruppo del laboratorio e ho controllato che nome, località e stato fossero uguali a quelli della CLI.
 
 Comandi principali che ho usato per le verifiche:
 
@@ -58,25 +58,25 @@ Gli orari sono in ora italiana. Quelli delle creazioni nel portale li ho presi d
 
 | Data/ora | Fase e contesto | Comando o pagina | Risultato reale ripulito | Interpretazione / passo successivo |
 |---|---|---|---|---|
-| 13/10 mattina | 1, WSL Bash | pwd, git status, ls dei modelli | percorso /home/jj_yts/workspace/azure-devops-lab, quattro modelli presenti | sono nel repository personale giusto. I materiali del corso sono in azure-devops-k8s-01 e non in corso-azure-devops |
-| 13/10 mattina | 2, WSL Bash | az version, az account show, az account list | CLI 2.83.0, Azure subscription 1 Enabled e predefinita, una sola sottoscrizione | CLI funzionante e già autenticata |
-| 13/10 mattina | 3, WSL Bash | az account list-locations, az provider show | italynorth presente, Microsoft.Network e Microsoft.Storage Registered | posso usare italynorth, nessun provider da registrare |
-| 13/10 mattina | 4, WSL Bash e VS Code | source del file variabili | bad substitution alla riga 3 | suffisso scritto nel posto sbagliato, corretto il file |
-| 13/10 mattina | 4, WSL Bash | source, printf delle variabili, controllo nome storage | nomi corretti, cleanup entro 2026-10-15, nome storage valido | variabili caricate dal file |
+| 13/10 mattina | 1, terminale Fedora | pwd, git status, ls dei modelli | percorso /home/jj_yts/workspace/azure-devops-lab, quattro modelli presenti | sono nel repository personale giusto. I materiali del corso sono in azure-devops-k8s-01 e non in corso-azure-devops |
+| 13/10 mattina | 2, terminale Fedora | az version, az account show, az account list | CLI 2.83.0, Azure subscription 1 Enabled e predefinita, una sola sottoscrizione | CLI funzionante e già autenticata |
+| 13/10 mattina | 3, terminale Fedora | az account list-locations, az provider show | italynorth presente, Microsoft.Network e Microsoft.Storage Registered | posso usare italynorth, nessun provider da registrare |
+| 13/10 mattina | 4, terminale Fedora e VS Code | source del file variabili | bad substitution alla riga 3 | suffisso scritto nel posto sbagliato, corretto il file |
+| 13/10 mattina | 4, terminale Fedora | source, printf delle variabili, controllo nome storage | nomi corretti, cleanup entro 2026-10-15, nome storage valido | variabili caricate dal file |
 | 13/10 12:35 | 5, Portal | Resource groups, Create con 4 tag | gruppo creato, az group show dà italynorth, Succeeded e 4 tag | resource group pronto |
 | 13/10 12:39 | 6, Portal | Virtual networks, Create | prima validazione senza creazione | ho ricontrollato i campi e ripreso |
-| 13/10 12:48 | 6, Portal e WSL Bash | Review + create, az network vnet show | VNet 10.20.0.0/16 e subnet snet-app create. Nella query la subnet risulta null, con az network vnet subnet show trovo 10.20.1.0/24 | VNet e subnet corrette |
-| 13/10 12:57 | 7, Portal e WSL Bash | Storage accounts Create, az storage account show | StorageV2, Standard_LRS, HTTPS obbligatorio, TLS 1.2, blob pubblici disattivati, Succeeded, 4 tag | storage creato con le impostazioni richieste, nessun dato caricato |
-| 13/10 13:03 | 8, WSL Bash | az resource list in tabella e jsonc | vnet-cea-ud02 e stcea2121b8ad, italynorth, UD02, 2026-10-15 | due risorse, la subnet non compare perché è dentro la VNet |
-| 13/10 13:03 | 8, WSL Bash | az resource list degli ID con sed | /subscriptions/<omitted>/resourceGroups/rg-cea-ud02-2121b8ad/providers/Microsoft.Network/virtualNetworks/vnet-cea-ud02 e lo stesso per lo storage | ID salvati senza l'ID della sottoscrizione |
+| 13/10 12:48 | 6, Portal e terminale Fedora | Review + create, az network vnet show | VNet 10.20.0.0/16 e subnet snet-app create. Nella query la subnet risulta null, con az network vnet subnet show trovo 10.20.1.0/24 | VNet e subnet corrette |
+| 13/10 12:57 | 7, Portal e terminale Fedora | Storage accounts Create, az storage account show | StorageV2, Standard_LRS, HTTPS obbligatorio, TLS 1.2, blob pubblici disattivati, Succeeded, 4 tag | storage creato con le impostazioni richieste, nessun dato caricato |
+| 13/10 13:03 | 8, terminale Fedora | az resource list in tabella e jsonc | vnet-cea-ud02 e stcea2121b8ad, italynorth, UD02, 2026-10-15 | due risorse, la subnet non compare perché è dentro la VNet |
+| 13/10 13:03 | 8, terminale Fedora | az resource list degli ID con sed | /subscriptions/<omitted>/resourceGroups/rg-cea-ud02-2121b8ad/providers/Microsoft.Network/virtualNetworks/vnet-cea-ud02 e lo stesso per lo storage | ID salvati senza l'ID della sottoscrizione |
 | 13/10 pomeriggio | 9, Portal | Resources e JSON View del gruppo | 2 risorse, italynorth, 4 tag, Succeeded | uguale a quanto visto con la CLI |
-| 13/10 pomeriggio | 9A, Cloud Shell Bash | az version, az account show | CLI 2.90.0, Azure subscription 1 Enabled | stessa sottoscrizione, ambiente diverso da WSL |
+| 13/10 pomeriggio | 9A, Cloud Shell Bash | az version, az account show | CLI 2.90.0, Azure subscription 1 Enabled | stessa sottoscrizione, ambiente diverso dal mio PC |
 | 13/10 pomeriggio | 9A, Cloud Shell PowerShell | Get-Module Az.Resources, Get-AzContext, Get-AzResourceGroup | Az.Resources 10.2.0, Azure subscription 1, gruppo letto correttamente | contesto giusto, Set-AzContext non necessario |
-| 13/10 pomeriggio | 10, WSL Bash | git status --short, git diff | modificati solo i due file della consegna, nessun dato sensibile | file pronti per il commit |
+| 13/10 pomeriggio | 10, terminale Fedora | git status --short, git diff | modificati solo i due file della consegna, nessun dato sensibile | file pronti per il commit |
 | 13/10 pomeriggio | 11 | nessun comando | non eseguito perché non ci sono stati errori | la parte 11A serve per l'autonomo |
-| 13/10 14:25 | 12, WSL Bash | az group show, az resource list | rg-cea-ud02-2121b8ad con UD02 e lab, solo VNet e storage | niente di sconosciuto, posso eliminare |
-| 13/10 14:25 | 12, WSL Bash | az group delete --yes --no-wait | comando terminato senza errori | richiesta inviata, da verificare |
-| 13/10 14:38 | 12, WSL Bash | az login --use-device-code | login completato su Azure subscription 1 | sessione rinnovata |
-| 13/10 14:38 | 12, WSL Bash | az group wait --deleted, az group exists | wait terminato, exists false | cleanup completato |
+| 13/10 14:25 | 12, terminale Fedora | az group show, az resource list | rg-cea-ud02-2121b8ad con UD02 e lab, solo VNet e storage | niente di sconosciuto, posso eliminare |
+| 13/10 14:25 | 12, terminale Fedora | az group delete --yes --no-wait | comando terminato senza errori | richiesta inviata, da verificare |
+| 13/10 14:38 | 12, terminale Fedora | az login --use-device-code | login completato su Azure subscription 1 | sessione rinnovata |
+| 13/10 14:38 | 12, terminale Fedora | az group wait --deleted, az group exists | wait terminato, exists false | cleanup completato |
 
 Riporta le proprietà e l'inventario prima dell'eliminazione, poi richiesta, attesa e assenza finale. Per il guidato includi il confronto CLI/Azure PowerShell; per l'autonomo motivazioni e requisiti. Nella conferma finale cita un commit già pubblicato, non l'hash del documento che stai ancora modificando.
