@@ -65,4 +65,4 @@ Il cleanup va fatto in quest'ordine, perché alcuni oggetti bloccano o dipendono
 
 - output anonimizzati utilizzati: az account show con query su Name, State e IsDefault, az group show, az role assignment list con query su ruolo, tipo di principal e scope e sed per nascondere l'ID della sottoscrizione, az lock list
 - cleanup verificato: ho seguito la checklist partendo dal lock. Il lock è stato rimosso, il resource group eliminato con az group exists che restituisce false, e gruppo e utente del laboratorio non risultano più in Entra ID
-- hash abbreviato e messaggio del commit: _da completare dopo il push_
+- hash abbreviato e messaggio del commit: 02b41be Completa laboratorio identita accessi e governance
