@@ -36,7 +36,23 @@ L'accesso effettivo dipende da tutte le assegnazioni insieme. L'utente cea-lab-c
 
 ## Cleanup
 
-_Da completare dopo il laboratorio autonomo e la verifica._
+Ho fatto il cleanup dopo il laboratorio autonomo e la verifica. Per prima cosa ho rimosso il lock, perché provando a eliminare il budget ho ricevuto l'errore di scope bloccato: il lock sul resource group vale anche per tutto quello che contiene.
+
+```bash
+LOCK_ID="$(az lock list --resource-group "$LAB_RG" --query "[?name=='lock-cea-delete'].id | [0]" --output tsv)"
+test -n "$LOCK_ID" && az lock delete --ids "$LOCK_ID"
+az lock list --resource-group "$LAB_RG" --output table
+```
+
+L'ultimo comando non ha mostrato nessun lock. Poi ho eliminato il resource group, che conteneva anche il budget e l'assegnazione Reader, e ho tolto da Entra ID il gruppo grp-cea-readers-c3f11a e l'utente cea-lab-c3f11a. L'assegnazione Owner ereditata dalla sottoscrizione non l'ho toccata.
+
+```bash
+az group delete --name "$LAB_RG" --yes --no-wait
+az group wait --name "$LAB_RG" --deleted
+az group exists --name "$LAB_RG"
+```
+
+az group exists ha restituito false. Nel controllo finale non risultano più resource group rg-cea, gruppi grp-cea né utenti cea-lab.
 
 ## Rilevanza professionale
 
@@ -61,3 +77,7 @@ L'autenticazione dice chi sei: è il login con az login o nel portale, gestito d
 | 14/10 11:58 | 7, Portal e terminale Fedora | Locks Add, az lock list | lock-cea-delete CanNotDelete | lock attivo |
 | 14/10 11:58 | 7, terminale Fedora | az group delete --name "$LAB_RG" --yes | ScopeLocked, eliminazione rifiutata | il lock funziona |
 | 14/10 11:59 | 7, terminale Fedora | az group exists | true | il gruppo è ancora presente |
+| 14/10 16:30 | 9, terminale Fedora | az lock delete con LOCK_ID, az lock list | nessun lock nel resource group | ora il gruppo si può eliminare |
+| 14/10 16:38 | 9, terminale Fedora | az group delete --no-wait, az group wait --deleted | wait terminato senza errori | eliminazione completata |
+| 14/10 16:40 | 9, terminale Fedora | az group exists | false | resource group eliminato |
+| 14/10 17:13 | 9, Portal e terminale Fedora | Entra ID Groups e Users, az ad group list, az ad user list | gruppo grp-cea-readers-c3f11a e utente cea-lab-c3f11a non più presenti | cleanup completo |
