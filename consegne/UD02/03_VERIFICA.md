@@ -28,7 +28,7 @@ Per le domande 1–8 riporta risposta e motivazione.
 1. Sottoscrizione: <omitted>, resourceGroups: rg-cea-test, provider: Microsoft.Storage  tipo e nome : stceatest01
 2. località: italynorth  tag: environment": "lab",
     "unit": "UD02"
-3. 
-4. 
-5. 
+3. az show (nome risorsa) --resource-group specificando il resource e si vede se appartiene al gruppo desiderato
+4. az group delete --yes --no-wait
+5. az group exists --name <NOME>
 
