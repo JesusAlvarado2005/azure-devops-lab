@@ -78,7 +78,7 @@ az resource list --resource-group "$AUTO_RG" --query "[].id" --output tsv | sed 
 
 - risorse eliminate: il resource group rg-cea-ud02-auto-b2628df9 con dentro vnet-cea-auto e stceaautob2628df9. Prima di eliminarlo ho ricontrollato nome, tag UD02 e autonomous e inventario
 - controllo finale: subito dopo il delete az group exists dava ancora true perché l'eliminazione era in corso. Dopo az group wait --deleted, terminato in circa 30 secondi, az group exists ha restituito false
-- hash abbreviato e messaggio del commit: _da completare dopo il push_
+- hash abbreviato e messaggio del commit: 4b45d90 Completa lo scenario Azure autonomo
 
 
 ## Registro cronologico delle evidenze
