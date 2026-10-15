@@ -33,7 +33,8 @@ La regola lifecycle si chiama delete-temporary, è abilitata, vale per i block b
 - download con --auth-mode login e cmp senza output, quindi il file scaricato è uguale all'originale
 - lettura tramite SAS con curl e cmp, anche qui file identico
 - i costi dipendono da quanto spazio occupo, dalla ridondanza, dal tier, dal numero di operazioni e dal traffico in uscita. Qui sono due file piccolissimi in LRS, quindi il costo è praticamente nullo
-- cleanup: lo faccio dopo il laboratorio autonomo e la verifica
+- cleanup fatto dopo il laboratorio autonomo e la verifica: ho cancellato i file temporanei in /tmp e fatto unset di AZURE_STORAGE_KEY e SAS_URL, poi ho eliminato il resource group con az group delete --no-wait e aspettato con az group wait --deleted
+- az group exists ha restituito false, e cercando le assegnazioni Storage Blob Data Contributor nella sottoscrizione non ne risulta più nessuna
 
 ## Rilevanza professionale
 
