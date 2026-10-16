@@ -58,4 +58,4 @@ Alla fine ho cancellato i file in /tmp, ho fatto unset delle variabili e ho elim
 ## Risultato finale
 
 - nessun segreto pubblicato: nel file non ci sono chiavi né token SAS né URL firmati né ID della sottoscrizione
-- hash abbreviato e messaggio del commit:
+- hash abbreviato e messaggio del commit: efe20b1 Completa laboratorio autonomo e verifica UD04
