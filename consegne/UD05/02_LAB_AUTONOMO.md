@@ -59,4 +59,4 @@ Per completare la catena, un problema di route si vede quando l'NSG permette il 
 
 - regola autonoma rimossa: Deny-Web-Postgres-Auto eliminata, nell'NSG resta solo Allow-Web-Postgres 300
 - cleanup verificato: ho eliminato il resource group rg-cea-network-4756a8 con VNet, NSG e le due NIC. az group exists ha restituito false e non risultano più resource group rg-cea
-- hash abbreviato e messaggio del commit: 569bef6 Completa laboratorio reti Azure e NSG
+- hash abbreviato e messaggio del commit: 635537f Completa laboratorio reti Azure e NSG

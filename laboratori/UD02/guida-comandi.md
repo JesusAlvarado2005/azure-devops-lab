@@ -397,7 +397,7 @@ git log --oneline -3                 # ultimi commit con il loro hash
 
 `git status -sb` mostra `[avanti 1]` se hai commit locali non ancora pubblicati.
 
-**L'hash** (es. `4b45d90`) è la "targa" unica di un commit. Nella consegna si cita un commit **già pubblicato**: un file non può contenere l'hash del commit che lo contiene, perché l'hash dipende dal contenuto.
+**L'hash** (es. `afdd207`) è la "targa" unica di un commit. Nella consegna si cita un commit **già pubblicato**: un file non può contenere l'hash del commit che lo contiene, perché l'hash dipende dal contenuto.
 
 ---
 
