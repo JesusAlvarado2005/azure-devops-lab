@@ -15,3 +15,8 @@ Contributo creato su feature branch e sottoposto a Pull Request.
 - push
 - Pull Request
 - review
+
+
+## Esito
+
+Review completata e modifica corretta.
