@@ -1,0 +1,30 @@
+[
+  {
+    "id": "P001",
+    "name": "Notebook Pro 14",
+    "category": "Notebook",
+    "price": 1299.0,
+    "stock": 8
+  },
+  {
+    "id": "P002",
+    "name": "Monitor 27 UHD",
+    "category": "Monitor",
+    "price": 349.0,
+    "stock": 4
+  },
+  {
+    "id": "P003",
+    "name": "Dock USB-C",
+    "category": "Accessori",
+    "price": 119.0,
+    "stock": 15
+  },
+  {
+    "id": "P004",
+    "name": "Keyboard Business",
+    "category": "Accessori",
+    "price": 59.0,
+    "stock": 2
+  }
+]
