@@ -54,7 +54,7 @@ Scrum lavora a sprint di durata fissa con ruoli ed eventi precisi, Kanban è un 
 
 ## 14.
 
-Epic è un obiettivo grande, si divide in Feature che sono funzionalità, ogni Feature in User Story che è il valore per l'utente e le User Story in Task che sono il lavoro tecnico da fare
+Epic è l'obiettivo grande, Feature una funzionalità, User Story cosa serve all'utente e Task il lavoro tecnico da fare
 
 ## 15.
 
@@ -74,7 +74,7 @@ lo Stage è una fase grande della pipeline come build o deploy, dentro ci sono i
 
 ## 19.
 
-Repos è il version control di Azure DevOps, Pipelines fa CI/CD, Test Plans gestisce i test manuali e i piani di test, Artifacts conserva i pacchetti come npm, NuGet o pip
+Repos è il git di Azure DevOps, Pipelines fa CI/CD, Test Plans per i test manuali, Artifacts per i pacchetti
 
 ## 20.
 
@@ -82,11 +82,11 @@ l'Organization è il contenitore più grande, dentro ci sono i Project, l'Agent 
 
 ## 21.
 
-il Microsoft-hosted lo gestisce Microsoft, è una macchina nuova a ogni job e non devi fare manutenzione. Il self-hosted è una macchina mia, come il mio PC, la gestisco io ma ho controllo su software e rete
+il Microsoft-hosted lo gestisce Microsoft e non devo fare niente, il self-hosted è una macchina mia come il mio PC e lo gestisco io
 
 ## 22.
 
-perché così qualsiasi pipeline, anche nuova o di altri, può usare il pool e far girare comandi sulla mia macchina, è meglio autorizzare ogni pipeline esplicitamente
+perché così qualsiasi pipeline può usare il pool e far girare comandi sulla mia macchina, meglio autorizzarle una alla volta
 
 ## 23.
 
@@ -105,7 +105,7 @@ no, Azure Pipelines è il servizio che definisce e orchestra le pipeline, l'Agen
 
 ## 26.
 
-perché il concetto è lo stesso in tutti gli strumenti, c'è chi orchestra e chi esegue, e Jenkins è molto usato nelle aziende quindi è bene saperlo riconoscere
+perché il concetto è lo stesso, c'è chi orchestra e chi esegue, cambia solo il nome
 
 ## 27.
 
@@ -113,7 +113,7 @@ in UD13 le validazioni dell'infrastruttura come codice, in UD14 test, build e pu
 
 ## 28.
 
-il self-hosted è sicuro di funzionare subito e lo usiamo come base, il Microsoft-hosted lo prepariamo per le UD dopo appena è disponibile, così se uno manca c'è l'altro
+il self-hosted funziona subito, il Microsoft-hosted lo usiamo dopo quando è disponibile, così se uno manca c'è l'altro
 
 ## 29.
 
@@ -127,11 +127,11 @@ perché la registrazione c'è ancora, manca solo il processo acceso. Rifare PAT 
 
 | Area | Strumento del percorso |
 |---|---|
-| Planning | Azure Boards, pianificare e tracciare il lavoro |
-| Version Control | GitHub, tiene la storia delle versioni del codice con git |
-| CI/CD | Azure Pipelines, la CI integra e testa in automatico, il deploy può essere automatico o con approvazione |
-| Container | Docker, parte da un'immagine, più leggero di una VM perché condivide il kernel, si crea e si elimina facilmente |
-| Registry | Azure Container Registry, dove si salvano le immagini dei container |
-| IaC | Bicep e Terraform, l'infrastruttura scritta come codice |
-| Runtime | Azure Container Apps, dove l'app gira davvero |
-| Monitoring | Azure Monitor, log e metriche sull'andamento |
+| Planning | Azure Boards, si pianifica il lavoro |
+| Version Control | GitHub, si controllano le versioni con git |
+| CI/CD | Azure Pipelines, integrazione e deploy uno automatico e uno da approvare |
+| Container | Docker, parte da un'immagine, più leggero di una VM, condivide il kernel e si elimina facile |
+| Registry | Azure Container Registry, dove stanno le immagini |
+| IaC | Bicep e Terraform, infrastruttura scritta come codice |
+| Runtime | Azure Container Apps, dove gira l'app |
+| Monitoring | Azure Monitor, andamento log e metriche |
