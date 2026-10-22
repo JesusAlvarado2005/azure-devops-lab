@@ -28,3 +28,8 @@ build/
 
 # Sistema
 .DS_Store
+
+# Chiavi e token
+*.key
+id_*
+*token*.txt
