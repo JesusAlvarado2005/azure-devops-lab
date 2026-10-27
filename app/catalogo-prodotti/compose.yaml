@@ -8,6 +8,7 @@ services:
       APP_PORT: "8000"
       LOW_STOCK_THRESHOLD: "5"
       RUNTIME_DIR: "/runtime"
+      APP_ENV: "local-docker"
     volumes:
       - catalog-runtime:/runtime
     expose:
