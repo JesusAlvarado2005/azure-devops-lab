@@ -29,4 +29,5 @@ evidenze/           evidenze della UD01
 | UD06 | VM, App Service e backup | completata |
 | UD07 | amministrazione e monitoraggio | completata |
 | UD08 | Git collaborativo e Catalogo prodotti | completata |
-| UD09 | fondamenti DevOps e Azure DevOps | in corso |
+| UD09 | fondamenti DevOps e Azure DevOps | completata |
+| UD10 | Docker locale | in corso |

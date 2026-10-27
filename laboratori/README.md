@@ -12,6 +12,7 @@ Una guida per ogni unità con i comandi usati davvero nei laboratori, organizzat
 | UD06 | VM Linux, SSH, Nginx, IP Flow Verify, metriche, App Service | [guida-comandi](UD06/guida-comandi.md) |
 | UD07 | script idempotenti, PowerShell, Activity Log, KQL, alert | [guida-comandi](UD07/guida-comandi.md) |
 | UD08 | branch, Pull Request, review, conflitti, Catalogo prodotti | [guida-comandi](UD08/guida-comandi.md) |
+| UD09 | Azure DevOps, Agent Pool, self-hosted agent, PAT | [guida-comandi](UD09/guida-comandi.md) |
 
 ## Il ciclo di ogni laboratorio
 
