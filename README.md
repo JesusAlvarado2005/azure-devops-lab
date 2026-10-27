@@ -30,4 +30,5 @@ evidenze/           evidenze della UD01
 | UD07 | amministrazione e monitoraggio | completata |
 | UD08 | Git collaborativo e Catalogo prodotti | completata |
 | UD09 | fondamenti DevOps e Azure DevOps | completata |
-| UD10 | Docker locale | in corso |
+| UD10 | Docker locale | completata |
+| UD11 | ACR e Azure Container Apps | in corso |
