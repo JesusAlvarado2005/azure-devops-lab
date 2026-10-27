@@ -1,59 +1,76 @@
-# Catalogo prodotti locale
-
-Applicazione didattica senza dipendenze Python esterne.
-
-## Avvio
-
-Dalla directory `catalogo-prodotti`:
-
-```bash
-python3 server.py
-```
-
-Output atteso:
-
-```text
-Catalogo prodotti in ascolto su http://127.0.0.1:8000
-```
-
-## Test
-
-In un secondo terminale:
-
-```bash
-curl -i http://127.0.0.1:8000/health
-```
-
-```bash
-curl -s http://127.0.0.1:8000/api/products | python3 -m json.tool
-```
-
-```bash
-curl -s http://127.0.0.1:8000/api/products/P001 | python3 -m json.tool
-```
-
-Aprire nel browser:
-
-```text
-http://127.0.0.1:8000/
-```
-
-## Stop
-
-Nel terminale del server:
-
-```text
-Ctrl+C
-```
+# Catalogo prodotti containerizzato
 
 ## Architettura
 
 ```text
-Browser/curl
+Browser / curl
    |
-server.py
+127.0.0.1:8080
    |
-   +--> config.json
-   +--> data/products.json
-   +--> static/index.html
+frontend (Nginx)
+   |
+   | /api/* e /health
+   v
+backend:8000
+   |
+named volume /runtime
+```
+
+## Servizi
+
+### frontend
+
+- immagine base Nginx;
+- serve `frontend/index.html`;
+- reverse proxy verso `backend:8000`;
+- pubblicato solo su `127.0.0.1:8080`.
+
+### backend
+
+- Python standard library;
+- API prodotti;
+- health endpoint;
+- contatore persistente;
+- non pubblicato sull'host nel Compose.
+
+## Endpoint dall'host
+
+```text
+http://127.0.0.1:8080/
+http://127.0.0.1:8080/health
+http://127.0.0.1:8080/api/products
+http://127.0.0.1:8080/api/products/P001
+http://127.0.0.1:8080/api/counter
+```
+
+## Avvio
+
+```bash
+docker compose up -d --build
+```
+
+## Stato
+
+```bash
+docker compose ps
+```
+
+## Log
+
+```bash
+docker compose logs
+```
+
+## Stop
+
+```bash
+docker compose down
+```
+
+## Reset completo dei dati
+
+Solo quando richiesto:
+
+```bash
+docker compose down -v
 ```
