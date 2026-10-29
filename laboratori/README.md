@@ -14,6 +14,8 @@ Una guida per ogni unità con i comandi usati davvero nei laboratori, organizzat
 | UD08 | branch, Pull Request, review, conflitti, Catalogo prodotti | [guida-comandi](UD08/guida-comandi.md) |
 | UD09 | Azure DevOps, Agent Pool, self-hosted agent, PAT | [guida-comandi](UD09/guida-comandi.md) |
 | UD10 | Docker, Dockerfile, Compose, DNS, volume, diagnosi | [guida-comandi](UD10/guida-comandi.md) |
+| UD11 | ACR, Container Apps, managed identity, revision, ingress | [guida-comandi](UD11/guida-comandi.md) |
+| UD12 | Bicep, Terraform, what-if, plan, state, destroy | [guida-comandi](UD12/guida-comandi.md) |
 
 ## Il ciclo di ogni laboratorio
 

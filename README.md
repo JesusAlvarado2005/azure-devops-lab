@@ -12,7 +12,8 @@ consegne/UDxx/      consegne di ogni unità
   03_VERIFICA.md
   REVISIONE_*.md    revisioni del docente, dove presenti
 laboratori/         manuale comandi, una guida per unità (indice in laboratori/README.md)
-app/                Catalogo prodotti locale usato dalla UD08 in poi
+app/                Catalogo prodotti (UD08), versione Docker Compose (UD10) e backend cloud (UD11)
+infra/              codice IaC Bicep e Terraform (UD12), riusato dalle pipeline
 docs/               evidenze della collaborazione su GitHub
 evidenze/           evidenze della UD01
 ```
@@ -31,4 +32,6 @@ evidenze/           evidenze della UD01
 | UD08 | Git collaborativo e Catalogo prodotti | completata |
 | UD09 | fondamenti DevOps e Azure DevOps | completata |
 | UD10 | Docker locale | completata |
-| UD11 | ACR e Azure Container Apps | in corso |
+| UD11 | ACR e Azure Container Apps | completata |
+| UD12 | Bicep e Terraform | completata |
+| UD13 | pipeline IaC e preparazione CI | in corso |
