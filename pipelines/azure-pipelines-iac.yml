@@ -1,0 +1,93 @@
+trigger: none
+
+# UD13 usa intenzionalmente il primo self-hosted Agent del percorso.
+# In UD14 confronteremo questo modello con Microsoft-hosted.
+pool:
+  name: pool-ud09-wsl
+
+variables:
+  azureServiceConnection: 'sc-azure-ud13-15'
+  deliveryResourceGroup: 'rg-ud13-15-delivery'
+  location: 'northeurope'
+
+stages:
+
+- stage: Validate
+  displayName: Validate IaC
+  jobs:
+  - job: ValidateIaC
+    displayName: Validate Terraform and Bicep
+
+    # Un self-hosted conserva file fra esecuzioni.
+    # Puliamo il workspace per evitare dipendenze accidentali da run precedenti.
+    workspace:
+      clean: all
+
+    steps:
+
+    - checkout: self
+      clean: true
+
+    - bash: |
+        echo "Agent.Name=$(Agent.Name)"
+        echo "Agent.OS=$(Agent.OS)"
+        echo "Build.SourcesDirectory=$(Build.SourcesDirectory)"
+
+        echo
+        echo "Terraform:"
+        terraform version
+
+        echo
+        echo "Azure CLI:"
+        az version
+
+        echo
+        echo "Bicep:"
+        az bicep version
+      displayName: Inspect self-hosted agent and required tools
+
+    - bash: |
+        cd infra/terraform
+        terraform fmt -check
+        terraform init -backend=false
+        terraform validate
+      displayName: Terraform fmt and validate
+
+    - bash: |
+        az bicep lint --file infra/bicep/delivery.bicep
+      displayName: Bicep lint
+
+- stage: Deploy
+  displayName: Deploy delivery infrastructure
+  dependsOn: Validate
+  condition: succeeded()
+  jobs:
+  - job: DeployIaC
+    displayName: What-If and deploy ACR
+
+    workspace:
+      clean: all
+
+    steps:
+
+    - checkout: self
+      clean: true
+
+    - task: AzureCLI@2
+      displayName: Bicep What-If and deployment
+      inputs:
+        azureSubscription: '$(azureServiceConnection)'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az deployment group what-if \
+            --resource-group "$(deliveryResourceGroup)" \
+            --template-file infra/bicep/delivery.bicep \
+            --parameters location="$(location)"
+
+          az deployment group create \
+            --name "ud13-delivery-$(Build.BuildId)" \
+            --resource-group "$(deliveryResourceGroup)" \
+            --template-file infra/bicep/delivery.bicep \
+            --parameters location="$(location)" \
+            --output table
