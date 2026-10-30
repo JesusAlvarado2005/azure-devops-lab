@@ -54,7 +54,7 @@ stages:
       displayName: Terraform fmt and validate
 
     - bash: |
-        az bicep lint --file infra/bicep/delivery.bicep
+        az bicep lint --file infra/bicep/delivery-NON-ESISTE.bicep
       displayName: Bicep lint
 
 - stage: Deploy
