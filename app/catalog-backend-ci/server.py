@@ -6,7 +6,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 
-APP_VERSION = os.getenv("APP_VERSION", "ci-v1")
+APP_VERSION = os.getenv("APP_VERSION", "ci-v2")
 HOST = os.getenv("APP_HOST", "0.0.0.0")
 PORT = int(os.getenv("APP_PORT", "8000"))
 

@@ -11,7 +11,7 @@ USER appuser
 
 ENV APP_HOST=0.0.0.0 \
     APP_PORT=8000 \
-    APP_VERSION=ci-v1
+    APP_VERSION=ci-v2
 
 EXPOSE 8000
 
