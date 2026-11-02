@@ -17,6 +17,7 @@ Una guida per ogni unità con i comandi usati davvero nei laboratori, organizzat
 | UD11 | ACR, Container Apps, managed identity, revision, ingress | [guida-comandi](UD11/guida-comandi.md) |
 | UD12 | Bicep, Terraform, what-if, plan, state, destroy | [guida-comandi](UD12/guida-comandi.md) |
 | UD13 | Terraform in pipeline, WIF, ACR, CI | [guida-comandi](UD13/guida-comandi.md) |
+| UD14 | test rosso/verde, nuova run CI, ACR e Agent | [guida-comandi](UD14/guida-comandi.md) |
 
 ## Il ciclo di ogni laboratorio
 
