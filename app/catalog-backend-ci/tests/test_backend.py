@@ -17,7 +17,7 @@ class CatalogTests(unittest.TestCase):
 
     def test_health_version(self):
         payload = server.health_payload()
-        self.assertEqual(payload["version"], "ci-v1")
+        self.assertEqual(payload["version"], "ci-v2")
 
     def test_product_count(self):
         payload = server.products_payload()
