@@ -78,13 +78,15 @@ git push -u origin feature/ud14-ci-v2
 
 Poi apro la PR verso `main` e completo il merge. Il YAML `pipelines/azure-pipelines-ci-selfhosted.yml` ha `trigger: main`, quindi la CI parte con il merge su `main`, non con la sola PR.
 
+Nel mio caso la PR è la #5, mergiata il 2026-11-02 con merge commit `117bbeb`.
+
 Con `UD14_AGENT_MODE=SELF_HOSTED_FALLBACK` l'agent deve essere online prima della run:
 
 ```bash
 cd ~/azdo-agent && ./run.sh
 ```
 
-Nel pool `pool-ud09-wsl` deve risultare `Online`.
+Nel pool `pool-ud09-wsl` deve risultare `Online`. Il vecchio agent `wsl-ud09-jesusalvaradojeanfra` non era più presente su questa macchina, quindi ho registrato `linux-ud14-jj` in `/home/jj/azdo-agent`.
 
 ## 7. Verifica run e ACR
 
@@ -117,7 +119,7 @@ az acr repository show-tags \
   --output table
 ```
 
-Deve comparire il nuovo tag uguale al Build ID della run. Prima di questa modifica in ACR c'erano i tag `10` e `7`, con ultimo aggiornamento `2026-10-30T15:35:38Z`.
+Deve comparire il nuovo tag uguale al Build ID della run. Dopo il merge della PR #5 la build 14 (`20261102.3`) ha pubblicato il tag `14`; in ACR sono presenti anche `11`, `10` e `7`.
 
 ## 8. Nessun cleanup
 
@@ -131,5 +133,6 @@ Non eliminare ACR, immagini, `sc-acr-ud14`, `sc-azure-ud13-15`, agent o pipeline
 | `Endpoint auth data not present` in `Docker@2` | service connection non autorizzata per la pipeline | autorizzare `sc-acr-ud14` solo su `ud13-ci` |
 | `401` o `403` sul push ACR | ruolo `AcrPush` o service connection mancante | controllare identità, ruolo e autorizzazione |
 | Job in attesa | agent offline o pool sbagliato | avviare `./run.sh` e verificare `pool-ud09-wsl` |
+| `cd: /home/jj_yts/azdo-agent: file o directory non esistente` | l'agent della UD13 era nel WSL, non in questo Linux | aprire WSL oppure registrare un agent Linux in `~/azdo-agent` |
 | `docker: command not found` | Docker non avviato o non nel PATH dell'agent | avviare Docker e controllare l'ambiente dell'agent |
 | file vecchi nella run | workspace self-hosted non pulito | usare `workspace: clean: all` e `checkout` pulito |

@@ -59,8 +59,9 @@ Per verificare che l'ambiente scelto abbia davvero Python e Docker e per lasciar
 ## Gate
 
 - `UD14_AGENT_MODE`: `SELF_HOSTED_FALLBACK`
-- pipeline CI riuscita: build 10 su `main` riuscita prima di questa modifica (tag `10`); la nuova run con `ci-v2` è da verificare dopo push, PR e merge
-- ACR/tag: ACR `acrud1315iwmnnz3ek6q7o` presente, repository `catalog-backend` presente, tag osservati `10` e `7`; nuovo tag Build ID da annotare dopo la run
+- pipeline CI riuscita: build 14 (numero `20261102.3`) dopo il merge della PR #5; `Test` e `BuildPush` riusciti, tag `14` pubblicato
+- ACR/tag: ACR `acrud1315iwmnnz3ek6q7o` presente, repository `catalog-backend` presente, tag osservati `14`, `11`, `10`, `7`; il tag della run del merge è `14`
+- agent usato: `linux-ud14-jj` (AgentId 18), OS `Linux`, macchina `jj-host`
 - `sc-azure-ud13-15`: presente (ARM/WIF, usata dal blocco CD)
 - `sc-acr-ud14`: presente (`isReady: true`, `isShared: false`, WIF)
 - cleanup eseguito: NO

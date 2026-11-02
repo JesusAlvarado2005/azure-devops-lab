@@ -9,8 +9,8 @@
 - commit app: `6804bf8 feat: bump catalog version to ci-v2`
 - commit test: `587cfa8 test: align expected catalog version`
 - verifica locale immagine: `docker build -t catalog-backend:ud14-local app/catalog-backend-ci`, container su `127.0.0.1:18015`, `/health` → `{"status": "ok", "service": "catalog-backend", "version": "ci-v2"}`
-- PR: da aprire da `feature/ud14-ci-v2` verso `main` (a cura dell'utente dopo il push)
-- merge: da completare secondo le policy del repo (a cura dell'utente)
-- run CI: `ud13-ci` attivata da merge su `main` (da verificare dopo push; agent `wsl-ud09-jesusalvaradojeanfra` offline va riavviato se in modalità `SELF_HOSTED_FALLBACK`)
-- nuovo tag ACR: da annotare dopo la run CI (Build ID)
+- PR: #5, `https://github.com/JesusAlvarado2005/azure-devops-lab/pull/5`
+- merge: completato il 2026-11-02T17:15:03Z con merge commit `117bbeb`
+- run CI: `ud13-ci` build 14 (numero `20261102.3`), attivata dal merge su `main`; `Test` riuscito e `BuildPush` riuscito sull'agent `linux-ud14-jj`
+- nuovo tag ACR: `catalog-backend:14`, creato il 2026-11-02T17:16:00Z
 - cleanup eseguito: NO
