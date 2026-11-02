@@ -1,15 +1,15 @@
 # UD13 — Evidenze preparazione Continuous Integration
 
-- Percorso repository usato:
-- Resource Group e nome ACR (senza credenziali):
-- Esito dei 3 test locali:
-- Build Docker locale ed esito `/health`:
-- Stato di `sc-acr-ud14` e WIF:
-- Modalità agent scelta (`MICROSOFT_HOSTED` oppure `SELF_HOSTED_FALLBACK`):
-- YAML CI utilizzato:
-- Nome della sola pipeline CI:
-- Prima run (ID, esito osservato o blocco reale):
-- Stage Test (esito):
-- Stage BuildPush (esito):
-- Traccia dei log Agent.Name / OS / MachineName:
-- Stato finale e azioni rinviate alla nuova UD14:
+- Percorso repository usato: repository locale `/home/jj/Documenti/sviluppo/lab repo remoto/azure-devops-lab`; nell'agent il checkout finisce in `/home/jj_yts/azdo-agent/_work/2/s`.
+- Resource Group e nome ACR (senza credenziali): `rg-ud13-15-delivery` (northeurope), ACR `acrud1315iwmnnz3ek6q7o`, login server `acrud1315iwmnnz3ek6q7o.azurecr.io`. SKU `Basic`, admin user `false`, roleAssignmentMode `LegacyRegistryPermissions`.
+- Esito dei 3 test locali: `python3 -m unittest discover -s app/catalog-backend-ci/tests -v` → 3 test eseguiti, tutti `ok` (`test_health_status`, `test_health_version`, `test_product_count`), `OK`.
+- Build Docker locale ed esito `/health`: `docker build -t catalog-backend:ud13-local app/catalog-backend-ci` riuscita (immagine `26ad15642b58`). Container su `127.0.0.1:18014` e `curl -s http://127.0.0.1:18014/health` → `{"status": "ok", "service": "catalog-backend", "version": "ci-v1"}`.
+- Stato di `sc-acr-ud14` e WIF: service connection `sc-acr-ud14` presente, tipo `dockerregistry`, `isReady: true`, `isShared: false`, auth `WorkloadIdentityFederation` con login server `acrud1315iwmnnz3ek6q7o.azurecr.io`. Nessun admin user o password nel YAML.
+- Modalità agent scelta (`MICROSOFT_HOSTED` oppure `SELF_HOSTED_FALLBACK`): `SELF_HOSTED_FALLBACK`, perché lo stato Microsoft-hosted è ancora `MICROSOFT_HOSTED_PENDING` (come in UD09/UD12). Uso `pool-ud09-wsl`, agente `wsl-ud09-jesusalvaradojeanfra` avviato con `./run.sh` prima della run.
+- YAML CI utilizzato: `pipelines/azure-pipelines-ci-selfhosted.yml`; l'altro file `pipelines/azure-pipelines-ci.yml` (Microsoft-hosted) resta nel repo ma non è collegato a una pipeline.
+- Nome della sola pipeline CI: `ud13-ci` (definition id 2), una sola pipeline CI creata.
+- Prima run (ID, esito osservato o blocco reale): build 6 (`20261030.1`, `main`, manuale). Stage `Test` riuscito, poi `BuildPush` fallito nel task `Docker@2`: `##[error]Unhandled: Endpoint auth data not present: 789378af-44ad-46cb-ad26-2ac1a422b841`. Era la service connection non ancora autorizzata per questa pipeline. Dopo l'autorizzazione di `sc-acr-ud14` solo su `ud13-ci`, la build 7 (`20261030.2`) è riuscita.
+- Stage Test (esito): riuscito nella build 7 e nella build 10, con 3 test `ok` e `Ran 3 tests in 0.000s`, `OK`.
+- Stage BuildPush (esito): riuscito. Build 7 ha costruito e pubblicato `catalog-backend:7` (digest `sha256:96ff53a6e79d1ba3e65b59fea0dd7290d1335e0ab73ed03eb46ca0003ee82027`); build 10 ha pubblicato `catalog-backend:10` (digest `sha256:8ee68a739de9941260b9bf56a91d5e34bc52b69b743117d178e341a6c1102610`). In ACR risultano i tag `7` e `10`.
+- Traccia dei log Agent.Name / OS / MachineName: `Agent.Name=wsl-ud09-jesusalvaradojeanfra`, `Agent.OS=Linux`, `Agent.MachineName=Host-001`, `Build.SourcesDirectory=/home/jj_yts/azdo-agent/_work/2/s`. Versioni: `Python 3.14.8`, `Docker version 29.9.2, build a82e528`. Test e BuildPush girano sulla stessa macchina perché il pool è self-hosted.
+- Stato finale e azioni rinviate alla nuova UD14: pipeline `ud13-ci` verde su `main`; build 10 partita in automatico dopo il merge della PR #4; immagini `7` e `10` presenti in ACR; niente cleanup. L'agent ora è `Offline` perché ho fermato `run.sh`, va riavviato in UD14. In UD14 restano da verificare immagine/tag, introdurre un test di versione che fallisce e la Continuous Delivery Terraform con state remoto.

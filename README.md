@@ -14,6 +14,7 @@ consegne/UDxx/      consegne di ogni unità
 laboratori/         manuale comandi, una guida per unità (indice in laboratori/README.md)
 app/                Catalogo prodotti (UD08), versione Docker Compose (UD10) e backend cloud (UD11)
 infra/              codice IaC Bicep e Terraform (UD12), riusato dalle pipeline
+pipelines/          YAML delle pipeline Azure DevOps (UD13)
 docs/               evidenze della collaborazione su GitHub
 evidenze/           evidenze della UD01
 ```
@@ -34,4 +35,4 @@ evidenze/           evidenze della UD01
 | UD10 | Docker locale | completata |
 | UD11 | ACR e Azure Container Apps | completata |
 | UD12 | Bicep e Terraform | completata |
-| UD13 | pipeline IaC e preparazione CI | in corso |
+| UD13 | pipeline IaC e preparazione CI | completata |
