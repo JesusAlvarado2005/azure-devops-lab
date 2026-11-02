@@ -36,3 +36,4 @@ evidenze/           evidenze della UD01
 | UD11 | ACR e Azure Container Apps | completata |
 | UD12 | Bicep e Terraform | completata |
 | UD13 | pipeline IaC e preparazione CI | completata |
+| UD14 | CI e CD con Terraform | in corso — blocco CI completato, CD da svolgere |
