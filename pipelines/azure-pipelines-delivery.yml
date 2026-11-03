@@ -1,0 +1,211 @@
+trigger:
+- main
+
+pool:
+  name: pool-ud09-wsl
+
+variables:
+  azureServiceConnection: 'sc-azure-ud13-15'
+  resourceGroup: 'rg-ud13-15-delivery'
+  terraformDirectory: '$(Build.SourcesDirectory)/infra/terraform/ud15'
+  imageRepository: 'catalog-backend'
+  imageTag: '$(Build.BuildId)'
+  dockerfilePath: '$(Build.SourcesDirectory)/app/catalog-backend-ci/Dockerfile'
+  buildContext: '$(Build.SourcesDirectory)/app/catalog-backend-ci'
+  targetPort: '8000'
+  stateContainer: 'tfstate'
+  stateKey: 'ud15.tfstate'
+
+stages:
+
+- stage: IaC
+  displayName: Terraform validate and plan
+  jobs:
+  - job: TerraformPlan
+    workspace:
+      clean: all
+    steps:
+    - checkout: self
+      clean: true
+
+    - task: AzureCLI@2
+      displayName: Terraform plan
+      inputs:
+        azureSubscription: '$(azureServiceConnection)'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          set -euo pipefail
+
+          terraform version
+          az version
+          python3 --version
+          docker --version
+
+          export ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+          export ARM_TENANT_ID=$(az account show --query tenantId --output tsv)
+          export ARM_USE_CLI=true
+          export ARM_USE_AZUREAD=true
+          export TF_IN_AUTOMATION=true
+
+          TFSTATE_STORAGE="sttf15$(echo "$ARM_SUBSCRIPTION_ID" | tr -d '-' | cut -c1-16)"
+
+          ACR_NAME=$(az acr list             --resource-group "$(resourceGroup)"             --query "[0].name"             --output tsv)
+
+          test -n "$ACR_NAME"
+
+          az storage blob list             --account-name "$TFSTATE_STORAGE"             --container-name "$(stateContainer)"             --auth-mode login             --num-results 1             --output none
+
+          cd "$(terraformDirectory)"
+
+          terraform fmt -check
+
+          terraform init             -input=false             -reconfigure             -backend-config="storage_account_name=$TFSTATE_STORAGE"             -backend-config="container_name=$(stateContainer)"             -backend-config="key=$(stateKey)"
+
+          terraform validate
+
+          terraform plan             -lock-timeout=60s             -input=false             -var="acr_name=$ACR_NAME"             -var="image_tag=$(imageTag)"             -var="target_port=$(targetPort)"             -out=ud15-plan.tfplan
+
+          terraform show             -no-color             ud15-plan.tfplan
+
+- stage: Test
+  displayName: Test application
+  dependsOn: IaC
+  condition: succeeded()
+  jobs:
+  - job: PythonTests
+    workspace:
+      clean: all
+    steps:
+    - checkout: self
+      clean: true
+
+    - bash: |
+        set -euo pipefail
+
+        python3 -m unittest discover           -s app/catalog-backend-ci/tests           -v
+      displayName: Run Python tests
+
+- stage: BuildPush
+  displayName: Build and push image
+  dependsOn: Test
+  condition: succeeded()
+  jobs:
+  - job: DockerBuild
+    workspace:
+      clean: all
+    steps:
+    - checkout: self
+      clean: true
+
+    - task: AzureCLI@2
+      displayName: Build and push to ACR
+      inputs:
+        azureSubscription: '$(azureServiceConnection)'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          set -euo pipefail
+
+          docker --version
+          docker info >/dev/null
+
+          ACR_NAME=$(az acr list             --resource-group "$(resourceGroup)"             --query "[0].name"             --output tsv)
+
+          ACR_LOGIN=$(az acr show             --name "$ACR_NAME"             --resource-group "$(resourceGroup)"             --query loginServer             --output tsv)
+
+          IMAGE="$ACR_LOGIN/$(imageRepository):$(imageTag)"
+
+          az acr login             --name "$ACR_NAME"
+
+          docker build             --file "$(dockerfilePath)"             --tag "$IMAGE"             "$(buildContext)"
+
+          docker push "$IMAGE"
+
+          az acr repository show-tags             --name "$ACR_NAME"             --repository "$(imageRepository)"             --orderby time_desc             --top 5             --output table
+
+- stage: Deploy
+  displayName: Terraform apply
+  dependsOn: BuildPush
+  condition: succeeded()
+  jobs:
+  - job: TerraformApply
+    workspace:
+      clean: all
+    steps:
+    - checkout: self
+      clean: true
+
+    - task: AzureCLI@2
+      displayName: Terraform plan and apply
+      inputs:
+        azureSubscription: '$(azureServiceConnection)'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          set -euo pipefail
+
+          export ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+          export ARM_TENANT_ID=$(az account show --query tenantId --output tsv)
+          export ARM_USE_CLI=true
+          export ARM_USE_AZUREAD=true
+          export TF_IN_AUTOMATION=true
+
+          TFSTATE_STORAGE="sttf15$(echo "$ARM_SUBSCRIPTION_ID" | tr -d '-' | cut -c1-16)"
+
+          ACR_NAME=$(az acr list             --resource-group "$(resourceGroup)"             --query "[0].name"             --output tsv)
+
+          test -n "$ACR_NAME"
+
+          cd "$(terraformDirectory)"
+
+          terraform init             -input=false             -reconfigure             -backend-config="storage_account_name=$TFSTATE_STORAGE"             -backend-config="container_name=$(stateContainer)"             -backend-config="key=$(stateKey)"
+
+          terraform plan             -lock-timeout=60s             -input=false             -var="acr_name=$ACR_NAME"             -var="image_tag=$(imageTag)"             -var="target_port=$(targetPort)"             -out=ud15-apply.tfplan
+
+          terraform apply             -lock-timeout=60s             -input=false             ud15-apply.tfplan
+
+          terraform output
+
+- stage: Smoke
+  displayName: Smoke test
+  dependsOn: Deploy
+  condition: succeeded()
+  jobs:
+  - job: SmokeTest
+    workspace:
+      clean: all
+    steps:
+    - checkout: self
+      clean: true
+
+    - task: AzureCLI@2
+      displayName: Verify deployed version
+      inputs:
+        azureSubscription: '$(azureServiceConnection)'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          set -euo pipefail
+
+          export ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+          export ARM_TENANT_ID=$(az account show --query tenantId --output tsv)
+          export ARM_USE_CLI=true
+          export ARM_USE_AZUREAD=true
+          export TF_IN_AUTOMATION=true
+
+          TFSTATE_STORAGE="sttf15$(echo "$ARM_SUBSCRIPTION_ID" | tr -d '-' | cut -c1-16)"
+
+          cd "$(terraformDirectory)"
+
+          terraform init             -input=false             -reconfigure             -backend-config="storage_account_name=$TFSTATE_STORAGE"             -backend-config="container_name=$(stateContainer)"             -backend-config="key=$(stateKey)"
+
+          FQDN=$(terraform output -raw fqdn)
+
+          RESPONSE=$(curl             --fail             --silent             --show-error             --retry 20             --retry-delay 5             --retry-all-errors             "https://$FQDN/health")
+
+          echo "$RESPONSE"             | python3 -m json.tool
+
+          VERSION=$(echo "$RESPONSE"             | python3 -c 'import json,sys; print(json.load(sys.stdin)["version"])')
+
+          test "$VERSION" = "$(imageTag)"

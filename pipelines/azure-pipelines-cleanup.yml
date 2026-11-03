@@ -1,0 +1,50 @@
+trigger: none
+
+pool:
+  name: pool-ud09-wsl
+
+variables:
+  azureServiceConnection: 'sc-azure-ud13-15'
+  resourceGroup: 'rg-ud13-15-delivery'
+  terraformDirectory: '$(Build.SourcesDirectory)/infra/terraform/ud15'
+  stateContainer: 'tfstate'
+  stateKey: 'ud15.tfstate'
+
+stages:
+
+- stage: Cleanup
+  displayName: Terraform destroy
+  jobs:
+  - job: TerraformDestroy
+    workspace:
+      clean: all
+    steps:
+    - checkout: self
+      clean: true
+
+    - task: AzureCLI@2
+      displayName: Destroy Terraform managed resources
+      inputs:
+        azureSubscription: '$(azureServiceConnection)'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          set -euo pipefail
+
+          export ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+          export ARM_TENANT_ID=$(az account show --query tenantId --output tsv)
+          export ARM_USE_CLI=true
+          export ARM_USE_AZUREAD=true
+          export TF_IN_AUTOMATION=true
+
+          TFSTATE_STORAGE="sttf15$(echo "$ARM_SUBSCRIPTION_ID" | tr -d '-' | cut -c1-16)"
+
+          ACR_NAME=$(az acr list             --resource-group "$(resourceGroup)"             --query "[0].name"             --output tsv)
+
+          cd "$(terraformDirectory)"
+
+          terraform init             -input=false             -reconfigure             -backend-config="storage_account_name=$TFSTATE_STORAGE"             -backend-config="container_name=$(stateContainer)"             -backend-config="key=$(stateKey)"
+
+          terraform plan             -destroy             -lock-timeout=60s             -input=false             -var="acr_name=$ACR_NAME"             -var="image_tag=cleanup"             -out=ud15-destroy.tfplan
+
+          terraform apply             -lock-timeout=60s             -input=false             ud15-destroy.tfplan
