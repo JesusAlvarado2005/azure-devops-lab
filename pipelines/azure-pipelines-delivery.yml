@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  name: pool-ud09-wsl
+  name: ud14-delivery
 
 variables:
   azureServiceConnection: 'sc-azure-ud13-15'
