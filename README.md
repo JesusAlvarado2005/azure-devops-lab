@@ -14,7 +14,8 @@ consegne/UDxx/      consegne di ogni unità
 laboratori/         manuale comandi, una guida per unità (indice in laboratori/README.md)
 app/                Catalogo prodotti (UD08), versione Docker Compose (UD10) e backend cloud (UD11)
 infra/              codice IaC Bicep e Terraform (UD12), riusato dalle pipeline
-pipelines/          YAML delle pipeline Azure DevOps (UD13)
+pipelines/          YAML delle pipeline Azure DevOps (UD13-UD14)
+k8s/                manifest Kubernetes (UD15): namespace, Deployment, Service
 docs/               evidenze della collaborazione su GitHub
 evidenze/           evidenze della UD01
 ```
@@ -37,3 +38,8 @@ evidenze/           evidenze della UD01
 | UD12 | Bicep e Terraform | completata |
 | UD13 | pipeline IaC e preparazione CI | completata |
 | UD14 | CI e CD con Terraform | in corso — blocco CI completato, CD da svolgere |
+| UD15 | Kubernetes con Minikube: Deployment, Service, scaling, rollout, rollback e diagnosi | completata |
+
+## Autore
+
+Jeanfranco Alvarado — sito e CV aggiornato: https://jesusalvarado2005.github.io/sito-j/

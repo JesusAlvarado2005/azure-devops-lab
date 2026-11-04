@@ -18,6 +18,7 @@ Una guida per ogni unità con i comandi usati davvero nei laboratori, organizzat
 | UD12 | Bicep, Terraform, what-if, plan, state, destroy | [guida-comandi](UD12/guida-comandi.md) |
 | UD13 | Terraform in pipeline, WIF, ACR, CI | [guida-comandi](UD13/guida-comandi.md) |
 | UD14 | test rosso/verde, nuova run CI, ACR e Agent | [guida-comandi](UD14/guida-comandi.md) |
+| UD15 | Minikube, kubectl, Deployment, Service, port-forward, rollout e diagnosi | [guida-comandi](UD15/guida-comandi.md) |
 
 ## Il ciclo di ogni laboratorio
 
