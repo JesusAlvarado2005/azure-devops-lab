@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-intro
+  namespace: ft152-ud15
+spec:
+  type: ClusterIP
+  # I backend sono selezionati dalla label, non dal nome del Deployment.
+  selector:
+    app: web-intro
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

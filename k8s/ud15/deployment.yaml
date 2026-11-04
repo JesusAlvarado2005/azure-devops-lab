@@ -1,0 +1,25 @@
+# Micro-demo: Nginx standard, non il frontend completo del Catalogo.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-intro
+  namespace: ft152-ud15
+spec:
+  replicas: 1
+  # Conserviamo i template precedenti per l'esercizio di rollback.
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: web-intro
+  template:
+    metadata:
+      labels:
+        app: web-intro
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.28.0-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80

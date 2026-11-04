@@ -1,0 +1,27 @@
+# Variante individuale: secondo frontend Nginx accanto a web-intro.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-autonomo
+  namespace: ft152-ud15
+spec:
+  replicas: 2
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: web-autonomo
+  template:
+    metadata:
+      labels:
+        app: web-autonomo
+        # Label aggiuntiva solo sui Pod della variante: distingue il frontend
+        # dal workload del guidato, che non ha component=frontend.
+        component: frontend
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.28.0-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80

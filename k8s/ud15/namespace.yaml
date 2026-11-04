@@ -1,0 +1,8 @@
+# Namespace distinto dagli esercizi preesistenti in corso-k8s.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ft152-ud15
+  labels:
+    corso: formatemp152
+    unita: ud15
