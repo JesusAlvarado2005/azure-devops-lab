@@ -12,10 +12,10 @@ consegne/UDxx/      consegne di ogni unità
   03_VERIFICA.md
   REVISIONE_*.md    revisioni del docente, dove presenti
 laboratori/         manuale comandi, una guida per unità (indice in laboratori/README.md)
-app/                Catalogo prodotti (UD08), versione Docker Compose (UD10) e backend cloud (UD11)
+app/                Catalogo prodotti (UD08), Docker Compose (UD10), backend cloud (UD11) e variante UD16
 infra/              codice IaC Bicep e Terraform (UD12), riusato dalle pipeline
 pipelines/          YAML delle pipeline Azure DevOps (UD13-UD14)
-k8s/                manifest Kubernetes (UD15): namespace, Deployment, Service
+k8s/                manifest Kubernetes (UD15-UD16): namespace, Deployment, Service, PVC, Gateway
 docs/               evidenze della collaborazione su GitHub
 evidenze/           evidenze della UD01
 ```
@@ -37,8 +37,9 @@ evidenze/           evidenze della UD01
 | UD11 | ACR e Azure Container Apps | completata |
 | UD12 | Bicep e Terraform | completata |
 | UD13 | pipeline IaC e preparazione CI | completata |
-| UD14 | CI e CD con Terraform | in corso — blocco CI completato, CD da svolgere |
+| UD14 | CI e CD con Terraform | completata |
 | UD15 | Kubernetes con Minikube: Deployment, Service, scaling, rollout, rollback e diagnosi | completata |
+| UD16 | Configurazione, persistenza, DNS e Gateway API | in corso — prima metà completata |
 
 ## Autore
 

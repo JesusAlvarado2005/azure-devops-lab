@@ -1,0 +1,17 @@
+services:
+  ingresso:
+    image: nginx:1.28.0-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${ENTRY_PORT:?configurare .env}:8080"
+    environment:
+      NODE_NAME: "${NODE_NAME:?configurare .env}"
+      GATEWAY_NODEPORT: "${GATEWAY_NODEPORT:?configurare .env}"
+    volumes:
+      - ./default.conf.template:/etc/nginx/templates/default.conf.template:ro
+    networks:
+      - nodo
+networks:
+  nodo:
+    external: true
+    name: "${K8S_DOCKER_NETWORK:?configurare .env}"

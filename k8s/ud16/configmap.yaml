@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalog-config
+data:
+  APP_HOST: 0.0.0.0
+  APP_PORT: '8000'
+  LOW_STOCK_THRESHOLD: '5'
+  RUNTIME_DIR: /runtime
