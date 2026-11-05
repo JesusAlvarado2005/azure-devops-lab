@@ -15,25 +15,25 @@
 
 ## Terraform
 
-- init: `terraform init -backend=false` riuscito; provider `hashicorp/azurerm` versione 5.4.0
+- init: `terraform init -backend=false` locale riuscito; provider `hashicorp/azurerm` versione 5.4.0
 - validate: `Success! The configuration is valid.`
-- plan iniziale: eseguito dallo stage `IaC` della pipeline di delivery
-- apply: eseguito dallo stage `Deploy` della pipeline di delivery
-- state remoto: blob `ud15.tfstate` nel container `tfstate` dello storage account `sttf156e08fcb1163b497b`
+- plan iniziale: eseguito dallo stage `IaC` della pipeline di delivery; al momento del piano Environment e Container App non esistevano (verificato con `az containerapp env list` e `az containerapp list`, entrambi vuoti prima della run)
+- apply: eseguito dallo stage `Deploy`; a fine stage esistono `acaenv-ud15` e `catalog-api-ud15` con immagine `catalog-backend:26` e `target_port = 8000`
+- state remoto: blob `ud15.tfstate` nel container `tfstate` di `sttf156e08fcb1163b497b`, ultima modifica `2026-11-05T10:14:46Z`, 16.337 byte
 
 ## Pipeline
 
-- Build ID: da registrare dopo la run
-- IaC: da registrare dopo la run
-- Test: da registrare dopo la run
-- BuildPush: da registrare dopo la run
-- Deploy: da registrare dopo la run
-- Smoke: da registrare dopo la run
+- Build ID: **26** (tag immagine `26`)
+- IaC: Succeeded (10:09:54Z → 10:10:26Z)
+- Test: Succeeded (10:10:56Z → 10:11:05Z)
+- BuildPush: Succeeded (10:11:12Z → 10:11:44Z)
+- Deploy: Succeeded (10:11:50Z → 10:14:54Z)
+- Smoke: Succeeded (10:15:00Z → 10:15:32Z)
 
 ## Deployment
 
-- image tag: da registrare dopo la run
-- FQDN: da registrare dopo la run
-- APP_VERSION: da registrare dopo la run
-- revision: da registrare dopo la run
-- health: da registrare dopo la run
+- image tag: `26` — `acrud1315iwmnnz3ek6q7o.azurecr.io/catalog-backend:26`
+- FQDN: `catalog-api-ud15.wonderfuldesert-24121356.northeurope.azurecontainerapps.io`
+- APP_VERSION: `26`
+- revision: `catalog-api-ud15--lyigbdm`, attiva, creata `2026-11-05T10:14:36Z`, 1 replica
+- health: HTTP 200, `{"status":"ok","service":"catalog-backend","version":"26"}` — la versione corrisponde al Build ID della run
