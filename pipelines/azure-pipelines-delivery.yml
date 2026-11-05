@@ -12,7 +12,7 @@ variables:
   imageTag: '$(Build.BuildId)'
   dockerfilePath: '$(Build.SourcesDirectory)/app/catalog-backend-ci/Dockerfile'
   buildContext: '$(Build.SourcesDirectory)/app/catalog-backend-ci'
-  targetPort: '9999'
+  targetPort: '8000'
   stateContainer: 'tfstate'
   stateKey: 'ud15.tfstate'
 
