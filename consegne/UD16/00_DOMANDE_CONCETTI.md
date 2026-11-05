@@ -27,9 +27,10 @@ StorageClass: standard (default, k8s.io/minikube-hostpath)
 CoreDNS: deployment coredns 1/1 in kube-system
 Namespace UD16: ft152-catalogo creato nel guidato
 Helm: v4.2.2 presente
-CRD Gateway API: assenti
-GatewayClass: nessuna
-Porta 18016: libera; ingresso Compose non ancora avviato
+CRD Gateway API: assenti all'inizio, installate nel guidato (profilo standard v2.7.2)
+GatewayClass: nessuna all'inizio; `nginx` Accepted=True dopo il guidato
+Porta 18016: libera all'inizio; ingresso Compose attivo dopo il guidato
+Stato finale: soglia 5, backend/frontend 1/1, PVC Bound, Gateway Programmed=True
 ```
 
 ## Schema o esempio significativo
@@ -42,7 +43,7 @@ flowchart LR
   B --> S["Service backend :8000"]
   F["Pod frontend Nginx"] -->|http://backend:8000| S
   S --> ES["EndpointSlice: IP dei Pod pronti"]
-  G["Gateway + HTTPRoute\n(seconda metà)"] -.-> F
+  G["Gateway catalog + HTTPRoute\nHost catalogo.lab"] --> F
 ```
 
-L'esempio mostra il confine fra configurazione, dato persistente e rete: la ConfigMap e il Secret cambiano il comportamento del processo, il PVC conserva il contatore, il Service e gli EndpointSlice collegano i Pod, il Gateway pubblicherà il percorso HTTP.
+L'esempio mostra il confine fra configurazione, dato persistente e rete: la ConfigMap e il Secret cambiano il comportamento del processo, il PVC conserva il contatore, il Service e gli EndpointSlice collegano i Pod, il Gateway pubblica il percorso HTTP.

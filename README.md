@@ -39,7 +39,7 @@ evidenze/           evidenze della UD01
 | UD13 | pipeline IaC e preparazione CI | completata |
 | UD14 | CI e CD con Terraform | completata |
 | UD15 | Kubernetes con Minikube: Deployment, Service, scaling, rollout, rollback e diagnosi | completata |
-| UD16 | Configurazione, persistenza, DNS e Gateway API | in corso — prima metà completata |
+| UD16 | Configurazione, persistenza, DNS e Gateway API | completata |
 
 ## Autore
 

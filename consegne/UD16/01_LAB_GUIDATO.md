@@ -1,8 +1,6 @@
 # UD16 — Esiti del laboratorio guidato
 
-Data della prova: **2026-11-05**. Context Kubernetes: `minikube` (Minikube v1.39.0, Kubernetes v1.37.0, nodo `Ready`). Namespace di lavoro: `ft152-catalogo`.
-
-> Nota: questa consegna copre la **prima metà** del guidato (§0–§5: configurazione, immagini, PVC, persistenza). Le sezioni Service/DNS e Gateway/HTTPRoute sono ancora da svolgere.
+Data della prova: **2026-11-05**. Context Kubernetes: `minikube` (Kubernetes v1.37.0, nodo `Ready`). Namespace di lavoro: `ft152-catalogo`.
 
 ## Configurazione e avvio
 
@@ -17,7 +15,6 @@ Data della prova: **2026-11-05**. Context Kubernetes: `minikube` (Minikube v1.39
   - `DEMO_SECRET`: presente, valore non mostrato
 - **Immagini**: `catalog-backend:ud16` e `catalog-frontend:ud16`, costruite da `app/catalogo-ud16` e caricate con `minikube image load`.
 - **Avvio**: `deployment/backend` e `deployment/frontend` entrambi `1/1`; log del backend: `Catalog backend listening on http://0.0.0.0:8000 threshold=5 runtime=/runtime`.
-- **Service**: `backend` ClusterIP `10.99.242.43:8000`, `frontend` ClusterIP `10.110.80.43:80`.
 
 ## Persistenza prima/dopo
 
@@ -35,15 +32,38 @@ Data della prova: **2026-11-05**. Context Kubernetes: `minikube` (Minikube v1.39
 
 ## Service, DNS e proxy
 
-**Non ancora svolto** — fa parte della seconda metà del guidato.
+- **Service**: `backend` ClusterIP `10.99.242.43`, porta `8000` → `targetPort: http`; `frontend` ClusterIP `10.110.80.43`, porta `80`.
+- **EndpointSlice backend**: `backend-6xd7p`, porta `8000`, endpoint `10.244.0.8` (IP del Pod backend in quella fase).
+- **DNS interno**: eseguito dal Pod frontend, `getent hosts backend` ha restituito:
+
+  ```text
+  10.99.242.43  backend.ft152-catalogo.svc.cluster.local  backend
+  ```
+
+  Il nome breve `backend` viene risolto da CoreDNS nel namespace `ft152-catalogo`; il nome completo è `backend.ft152-catalogo.svc.cluster.local`.
+- **Prova HTTP tramite il frontend** (port-forward `service/frontend 8081:80`, chiuso dopo la verifica):
+  - `GET /health` → `200`, `{"status":"ok","service":"catalog-backend","version":"2.0"}`
+  - `GET /api/products/P001` → `200`, `stock: 8`, `stock_status: OK` con soglia `5`
+- **Interpretazione**: il frontend raggiunge il backend usando il nome del Service, non un IP di Pod; nginx inoltra `/api/` e `/health` a `http://backend:8000`.
 
 ## Gateway e HTTPRoute
 
-**Non ancora svolto** — fa parte della seconda metà del guidato. Stato attuale dei prerequisiti: Helm presente (`v4.2.2`), CRD Gateway API assenti, nessuna `GatewayClass`, CoreDNS `1/1`.
+- **Prerequisiti**: Helm `v4.2.2`; CRD Gateway API installate dal profilo standard di Nginx Gateway Fabric `v2.7.2` con `kubectl kustomize ... | kubectl apply -f -`; controller installato via Helm (`ngf`, chart `nginx-gateway-fabric-2.7.2`, namespace `nginx-gateway`, `--set nginx.service.type=NodePort`). Pod del controller `ngf-nginx-gateway-fabric-5f779b678d-665dx` `1/1`.
+- **GatewayClass**: `nginx`, controller `gateway.nginx.org/nginx-gateway-controller`, `Accepted=True`.
+- **Gateway**: `catalog`, class `nginx`, listener HTTP porta `80`, `allowedRoutes` dallo stesso namespace. Stato: `Programmed=True`, address `10.109.4.45`, `attachedRoutes=1`.
+- **HTTPRoute**: `catalog`, `parentRefs: catalog`, hostname `catalogo.lab`, `PathPrefix /` → Service `frontend:80`. Stato: `Accepted=True`, `ResolvedRefs=True`.
+- **Service del proxy**: `catalog-nginx`, NodePort `32483`.
+- **Ingresso persistente**: `accesso/ud16/.env` configurato con `ENTRY_PORT=18016`, `GATEWAY_NODEPORT=32483`, rete Docker `minikube`; container `ft152-entry-ud16-ingresso-1` attivo su `127.0.0.1:18016`.
+- **Prova con `Host: catalogo.lab`** (senza port-forward):
+  - `GET /health` → `200`
+  - `GET /api/products/P001` → `200`, `stock 8`, `stock_status: OK`
+  - `GET /` → `HTTP 200`
+
+Il percorso completo è: client → ingresso Compose `127.0.0.1:18016` → NodePort `32483` → Gateway `catalog` → HTTPRoute `catalog` → Service `frontend` → Pod frontend → Service `backend`.
 
 ## Collegamento architetturale e accesso
 
-- **Oggetto configurato e componente che realizza il comportamento**: ConfigMap e Secret alimentano variabili e file del container backend; il PVC `catalog-runtime` realizza la persistenza di `/runtime`; il Deployment mantiene una replica e la ricrea quando il Pod viene eliminato.
-- **Prova reale, momento e interpretazione**: incremento del contatore via `/api/counter`, eliminazione del Pod e rilettura dello stesso valore dal nuovo Pod. Il dato resta perché vive sul volume, non nel container.
-- **Indirizzo e percorso verificato**: `http://127.0.0.1:8082/api/counter` tramite `kubectl port-forward service/backend 8082:8000` — prova diagnostica diretta, chiusa dopo la verifica. Non è ancora attivo il percorso Gateway/ingresso locale.
-- **Stato dell'ingresso locale e limiti della prova**: `accesso/ud16` è stato copiato ma il progetto Compose non è stato configurato né avviato; la porta `18016` è libera. La seconda metà del guidato completerà Gateway, HTTPRoute e ingresso persistente.
+- **Oggetto configurato e componente che realizza il comportamento**: ConfigMap e Secret alimentano variabili e file del container backend; il PVC `catalog-runtime` realizza la persistenza di `/runtime`; il Deployment mantiene una replica e la ricrea quando il Pod viene eliminato; il Service e gli EndpointSlice collegano frontend e backend; Gateway, HTTPRoute e controller NGF realizzano l'accesso HTTP; il container Compose `ingresso` inoltra la porta locale alla rete Minikube.
+- **Prova reale, momento e interpretazione**: contatore `1` riletto dal nuovo Pod dopo l'eliminazione del precedente; DNS `backend` → `10.99.242.43`; P001 `OK` con soglia 5; Gateway `Programmed=True` e HTTPRoute `Accepted/ResolvedRefs=True`; richieste `200` attraverso `catalogo.lab:18016`.
+- **Indirizzo e percorso verificato**: `http://127.0.0.1:18016` con header `Host: catalogo.lab` — percorso **Gateway** completo e persistente; i port-forward `8081`/`8082` sono stati usati solo come diagnostica e chiusi.
+- **Stato dell'ingresso locale e limiti della prova**: ingresso Compose attivo con `restart: unless-stopped`, `.env` locale escluso da Git. La prova riguarda Minikube su Docker locale; non dimostra alta disponibilità, resistenza alla perdita del nodo né esposizione Internet.
