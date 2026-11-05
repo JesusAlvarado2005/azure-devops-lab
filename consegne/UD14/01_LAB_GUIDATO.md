@@ -8,7 +8,7 @@
 - `AcrPush`: assegnato sull'ACR a `sc-azure-ud13-15` (principal `7ddcc4d7-1b4e-458a-b733-d5a9a186d118`)
 - Storage state: `sttf156e08fcb1163b497b`, `Standard_LRS`, TLS 1.2, accesso pubblico ai blob disabilitato
 - container state: `tfstate`
-- `Storage Blob Data Contributor`: assegnato sul container `tfstate` a `sc-azure-ud13-15` (principal `5583c139-034d-45f0-a07f-96cdb90ac529`)
+- `Storage Blob Data Contributor`: assegnato sul container `tfstate` al service principal `sc-azure-ud13-15` (objectId `7ddcc4d7-1b4e-458a-b733-d5a9a186d118`). La prima assegnazione era stata fatta per errore sull'appId `5583c139-034d-45f0-a07f-96cdb90ac529`, che non è un principal: il primo stage `IaC` falliva per 403 sul blob dello state. Dopo la correzione il SP può leggere e scrivere `ud15.tfstate`.
 - managed identity: `id-ud15-acrpull`, principal `2ea95100-d52a-46ab-9919-d4f87fcb019b`, client `ec1966a8-c6ed-4b00-9146-ad59814994d2`
 - `AcrPull`: assegnato sull'ACR a `id-ud15-acrpull` (principal `2ea95100-d52a-46ab-9919-d4f87fcb019b`)
 - Agent: `linux-ud14-jj` (AgentId 18), pool `pool-ud09-wsl`, macchina `jj-host`, online il 2026-11-05 alle 08:13Z
