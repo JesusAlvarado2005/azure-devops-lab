@@ -202,10 +202,28 @@ stages:
 
           FQDN=$(terraform output -raw fqdn)
 
-          RESPONSE=$(curl             --fail             --silent             --show-error             --retry 20             --retry-delay 5             --retry-all-errors             "https://$FQDN/health")
+          # In revision_mode Single la revision precedente continua a rispondere
+          # finche' la nuova non e' pronta. Non basta un solo curl: bisogna
+          # attendere che la versione servita coincida con il Build ID atteso.
+          VERSION=""
 
-          echo "$RESPONSE"             | python3 -m json.tool
+          for attempt in $(seq 1 40); do
+            RESPONSE=$(curl --fail --silent --show-error "https://$FQDN/health" || true)
 
-          VERSION=$(echo "$RESPONSE"             | python3 -c 'import json,sys; print(json.load(sys.stdin)["version"])')
+            if [ -n "$RESPONSE" ]; then
+              VERSION=$(echo "$RESPONSE" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("version",""))' 2>/dev/null || true)
+            fi
 
-          test "$VERSION" = "$(imageTag)"
+            echo "tentativo $attempt/40: versione servita '${VERSION:-nessuna}', attesa '$(imageTag)'"
+
+            if [ "$VERSION" = "$(imageTag)" ]; then
+              echo "$RESPONSE" | python3 -m json.tool
+              echo "Smoke test superato: versione $(imageTag) raggiungibile"
+              exit 0
+            fi
+
+            sleep 5
+          done
+
+          echo "versione attesa '$(imageTag)' mai servita dopo 200 secondi"
+          exit 1
